@@ -12,10 +12,13 @@ class ImageTraversal:
         """
         Return list of children
         """
-        for _, new_pos in self.actions():
+        for _, new_pos in self.actions(position):
             yield new_pos
     
     def objective_value(self, x, y):
+        # print(f'The space as position {x} and {y}')
+        # print(f'is: {self.space[x,y]}')
+        print(f'space: {self.space.shape}')
         return self.space[x, y]
     
     def actions(self, position):
@@ -28,10 +31,11 @@ class ImageTraversal:
                 yield action, next_pos
 
     def next_pos(self, position, action):
-        if "L" in position: position.x -= 1
-        if "R" in position: position.x += 1
-        if "U" in position: position.y += 1
-        if "D" in position: position.y -= 1
+        if "L" in action: position.x -= 1
+        if "R" in action: position.x += 1
+        if "U" in action: position.y += 1
+        if "D" in action: position.y -= 1
+        return position
     
     def load_image(self, filename):
         # remove colors => z ranges from 0 to 255
@@ -62,7 +66,7 @@ class ImageTraversal:
             self.y = y
             self.z = z
             if x < 0 or y < 0: raise Exception(f"{x if x < 0 else y} must be non-negative") 
-            if 0 <= z <= 255: raise Exception(str(z) + " must between 0 and 255 (inclusive)")
+            if not (0 <= z <= 255): raise Exception(str(z) + " must between 0 and 255 (inclusive)")
         
         def __lt__(self, other):
             return self.z > other.z

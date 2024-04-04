@@ -27,8 +27,10 @@ class RandomRestartHillClimbing(LocalSearchStrategy):
     def __hill_climbing(problem, init):
         path = [init]
         while True:
-            curr = path[:-1]
-            candidate = max(problem.next(), key=lambda position: position.z)
+            curr = path[-1]
+            print(f'this is problem: {problem}')
+            print(f'this is curr: {curr}')
+            candidate = max(problem.next(curr), key=lambda position: position.z)
             if candidate.z > curr.z:
                 path.append(candidate)
             else: break
@@ -36,7 +38,8 @@ class RandomRestartHillClimbing(LocalSearchStrategy):
     
     def generate_random_state(problem, num_trial):
         for _ in range(0, num_trial):
-            x, y = np.random.random(problem.W, problem.W)
+            y = np.random.randint(problem.W)
+            x = np.random.randint(problem.H)
             yield ImageTraversal.Position(x, y, problem.objective_value(x, y))
         
    
