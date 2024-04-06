@@ -23,8 +23,6 @@ class RandomRestartHillClimbing(LocalSearchStrategy):
         results = []
         for initial_state in RandomRestartHillClimbing.generate_random_state(problem, num_trial):
             results.append(RandomRestartHillClimbing.__hill_climbing(problem, initial_state))
-        print("Candidate paths")
-        for result in results: print(result)
         return reduce(lambda best, candidate: candidate if candidate[-1][2] > best[-1][2] else best, results)
 
     @staticmethod

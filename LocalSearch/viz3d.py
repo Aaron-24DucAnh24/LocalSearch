@@ -19,6 +19,9 @@ def load_state_space(filename):
     X = np.arange(w)
     Y = np.arange(h)
     Z = img
+    print(X)
+    print(Y)
+    print(Z)
     return X, Y, Z
     
 def visualize(position):
@@ -29,7 +32,7 @@ def visualize(position):
     # draw state space (surface)
     ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
     # draw a polyline on the surface
-    ax.plot(range(0, 50), range(0, 50), Z[range(0, 50), range(0, 50)], 'r-', zorder=3, linewidth=0.5)
+    ax.plot([range(0, 50)], range(0, 50), Z[range(0, 50), range(0, 50)], 'r-', zorder=3, linewidth=0.5)
     plt.show()
     
 if __name__ == "__main__":

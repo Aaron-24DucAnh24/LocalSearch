@@ -47,15 +47,21 @@ class ImageTraversal:
         img = cv2.GaussianBlur(img, (5, 5), 0)
         return img
 
-    def visualize(position):
-        X, Y, Z = position
+    def visualize(self, path):
+        X = np.arange(self.W)
+        Y = np.arange(self.H)
+        Z = self.space
         X, Y = np.meshgrid(X, Y)
         fig = plt.figure(figsize=(8, 6))
         ax = plt.axes(projection='3d')
         # draw state space (surface)
         ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
         # draw a polyline on the surface
-        ax.plot(range(0, 50), range(0, 50), Z[range(0, 50), range(0, 50)], 'r-', zorder=3, linewidth=0.5)
+        x_range = [x[0] for x in path]
+        print(f"x range: {x_range}")
+        y_range = [x[1] for x in path]
+        z_range = [x[2] for x in path]
+        ax.plot(x_range, y_range, z_range, 'r-', zorder=3, linewidth=0.5)
         plt.show()
 
     class Position:
