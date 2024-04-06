@@ -11,6 +11,7 @@ class ImageTraversal:
         self.X = self.X.size
         self.Y = self.Y.size
         self.space = self.space.T
+
     def next(self, position):
         """
         Return list of children
@@ -55,7 +56,7 @@ class ImageTraversal:
         Z = img
         return X, Y, Z
 
-    def visualize(self, path):
+    def draw_path(self, path):
         X = np.arange(self.Y)
         Y = np.arange(self.X)
         Z = self.space
@@ -66,11 +67,14 @@ class ImageTraversal:
         ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
         # draw a polyline on the surface
         x_range = [x[1] for x in path]
-        print(f"x range: {x_range}")
         y_range = [x[0] for x in path]
         z_range = [x[2] for x in path]
         ax.plot(x_range, y_range, z_range, 'r-', zorder=3, linewidth=0.5)
         plt.show()
+
+    def show(self):
+        pass
+
 
     class Position:
         """

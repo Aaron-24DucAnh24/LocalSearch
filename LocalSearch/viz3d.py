@@ -19,9 +19,6 @@ def load_state_space(filename):
     X = np.arange(w)
     Y = np.arange(h)
     Z = img
-    print(X)
-    print(Y)
-    print(Z)
     return X, Y, Z
     
 def visualize(position):

@@ -2,8 +2,9 @@ from search import RandomRestartHillClimbing
 from problem import ImageTraversal
     
 if __name__ == "__main__":
-    s = RandomRestartHillClimbing(5)
-    p = ImageTraversal('monalisa.jpg')
+    inp = input("Alg: RandomRestartHillClimbing. Please input number of trial: ")
+    s = RandomRestartHillClimbing(int(inp))
+    p = ImageTraversal('camera.jpg')
     path = s.search(p)
     print(f"path found: {path}")
-    p.visualize(path)
+    p.draw_path(path)
