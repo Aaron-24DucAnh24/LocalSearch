@@ -7,9 +7,10 @@ class ImageTraversal:
     ACTIONS = np.array(["L", "R", "U", "D", "LU", "LD", "RU", "RD"])
 
     def __init__(self, image_uri) -> None:
-        self.space = self.load_image(image_uri)
-        self.H, self.W = self.space.shape
-
+        self.X, self.Y, self.space = self.load_image(image_uri)
+        self.X = self.X.size
+        self.Y = self.Y.size
+        self.space = self.space.T
     def next(self, position):
         """
         Return list of children
@@ -18,7 +19,10 @@ class ImageTraversal:
             yield new_pos
 
     def objective_value(self, x, y):
-        return self.space[x, y]
+        try:
+            return self.space[x, y] 
+        except:
+            return None
 
     def actions(self, position):
         """
@@ -26,7 +30,7 @@ class ImageTraversal:
         """
         for action in ImageTraversal.ACTIONS:
             next_pos = self.next_pos(position, action)
-            if ImageTraversal.Position.validate(next_pos):
+            if ImageTraversal.Position.validate(next_pos, xmax=self.X, ymax=self.Y):
                 yield action, next_pos
 
     def next_pos(self, position, action):
@@ -36,7 +40,7 @@ class ImageTraversal:
         if "U" in action: new_position.y += 1
         if "D" in action: new_position.y -= 1
         new_position.z = self.objective_value(new_position.x, new_position.y)
-        return new_position
+        return new_position if new_position.z is not None else None
 
     def load_image(self, filename):
         # remove colors => z ranges from 0 to 255
@@ -45,11 +49,15 @@ class ImageTraversal:
         img = cv2.resize(img, (0, 0), fx=0.25, fy=0.25)
         # create state space landscape
         img = cv2.GaussianBlur(img, (5, 5), 0)
-        return img
+        h, w = img.shape
+        X = np.arange(w)
+        Y = np.arange(h)
+        Z = img
+        return X, Y, Z
 
     def visualize(self, path):
-        X = np.arange(self.W)
-        Y = np.arange(self.H)
+        X = np.arange(self.Y)
+        Y = np.arange(self.X)
         Z = self.space
         X, Y = np.meshgrid(X, Y)
         fig = plt.figure(figsize=(8, 6))
@@ -57,9 +65,9 @@ class ImageTraversal:
         # draw state space (surface)
         ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
         # draw a polyline on the surface
-        x_range = [x[0] for x in path]
+        x_range = [x[1] for x in path]
         print(f"x range: {x_range}")
-        y_range = [x[1] for x in path]
+        y_range = [x[0] for x in path]
         z_range = [x[2] for x in path]
         ax.plot(x_range, y_range, z_range, 'r-', zorder=3, linewidth=0.5)
         plt.show()
@@ -84,11 +92,12 @@ class ImageTraversal:
             return position.x, position.y, position.z
 
         @staticmethod
-        def validate(position) -> bool:
-            if position.x < 0: return False
-            if position.y < 0: return False
-            if position.z > 255 or position.z < 0: return False
-            return True
+        def validate(position, xmin=0, xmax=0, ymin=0, ymax=0, zmin=0, zmax=255) -> bool:
+            if position is None: return False
+            if xmin <= position.x < xmax: return True
+            if ymin <= position.y < ymax: return True
+            if zmin <= position.z < zmax: return True
+            return False
 
         def __str__(self):
             return f"({self.x} {self.y} {self.z})"

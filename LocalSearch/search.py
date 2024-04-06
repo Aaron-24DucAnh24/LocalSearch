@@ -4,7 +4,7 @@ from problem import ImageTraversal
 from abc import ABC, abstractmethod
 import numpy as np
 from functools import reduce
-
+import random
 
 class LocalSearchStrategy(ABC):
     @abstractmethod
@@ -38,11 +38,12 @@ class RandomRestartHillClimbing(LocalSearchStrategy):
         return list(map(lambda position: ImageTraversal.Position.to_tuple3(position), path))
 
     @staticmethod
-    def generate_random_state(problem, num_trial=1):
+    def generate_random_state(problem: ImageTraversal, num_trial=1):
         for _ in range(0, num_trial):
-            y = np.random.randint(problem.W)
-            x = np.random.randint(problem.H)
-            yield ImageTraversal.Position(x, y, problem.objective_value(x, y))
+            x = random.randint(0, problem.X - 1)
+            y = random.randint(0, problem.Y - 1)
+            result = ImageTraversal.Position(x, y, problem.objective_value(x, y))
+            yield result
 
 
 class SimulatedAnnealing(LocalSearchStrategy):
