@@ -73,8 +73,15 @@ class ImageTraversal:
         plt.show()
 
     def show(self):
-        pass
-
+        X = np.arange(self.Y)
+        Y = np.arange(self.X)
+        Z = self.space
+        X, Y = np.meshgrid(X, Y)
+        fig = plt.figure(figsize=(8, 6))
+        ax = plt.axes(projection='3d')
+        # draw state space (surface)
+        ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
+        plt.show()
 
     class Position:
         """

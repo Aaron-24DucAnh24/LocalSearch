@@ -3,8 +3,8 @@ from problem import ImageTraversal
     
 if __name__ == "__main__":
     inp = input("Alg: RandomRestartHillClimbing. Please input number of trial: ")
-    s = RandomRestartHillClimbing(int(inp))
-    p = ImageTraversal('test3_shoulder.jpg')
-    path = s.search(p)
-    print(f"path found: {path}")
-    p.draw_path(path)
+    search_algo = RandomRestartHillClimbing(int(inp))
+    search_problem = ImageTraversal('monalisa.jpg')
+    result_path = search_algo.search(search_problem)
+    search_problem.show()
+    search_problem.draw_path(result_path)
