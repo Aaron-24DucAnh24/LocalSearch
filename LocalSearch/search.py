@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 from functools import reduce
 import random
+import math
 
 class LocalSearchStrategy(ABC):
     @abstractmethod
@@ -54,7 +55,45 @@ class SimulatedAnnealing(LocalSearchStrategy):
         return self.simulated_annealing_search(problem, self.schedule)
 
     @staticmethod
-    def simulated_annealing_search(problem, schedule): pass
+    def simulated_annealing_search(problem, schedule):
+        init_x = np.random.randint(problem.X)
+        init_y = np.random.randint(problem.Y)
+        path = [ImageTraversal.Position(init_x, init_y, problem.objective_value(init_x, init_y))]
+        t = 1
+
+        while (1):
+            cur = path[-1]
+            T = schedule(t)
+            if SimulatedAnnealing.terminate(T):
+                return list(map(lambda position: ImageTraversal.Position.to_tuple3(position), path))
+
+            succs = list(problem.next(cur))
+            if succs != None:
+                succ = random.choice(succs)
+                deltaE = int(succ.z) - int(cur.z)
+                if deltaE > 0 or SimulatedAnnealing.random(math.exp(deltaE/T)):
+                    path.append(succ)
+
+            t = t + 1
+
+    @staticmethod
+    def random(percent: float) -> bool:
+        upper = 1
+        while (percent < 1):
+            percent = percent * 10
+            upper = upper * 10
+
+        number = random.randint(1,upper)
+        middle = upper-percent
+        if 1 <= number <= middle:
+            return False
+        return True
+    
+    @staticmethod
+    def terminate(T: float) -> bool:
+        if T < 0.01:
+            return True
+        return False
 
 
 class LocalBeamSearch(LocalSearchStrategy):
