@@ -35,7 +35,11 @@ class ImageTraversal:
                 yield action, next_pos
 
     def next_pos(self, position, action):
-        new_position = deepcopy(position)
+        new_position = ImageTraversal.Position(
+            position.x, 
+            position.y, 
+            position.z,
+            position)
         if "L" in action: new_position.x -= 1
         if "R" in action: new_position.x += 1
         if "U" in action: new_position.y += 1
@@ -88,10 +92,11 @@ class ImageTraversal:
         Utility class to work with the problem state
         """
 
-        def __init__(self, x, y, z):
+        def __init__(self, x, y, z, parent = None):
             self.x = x
             self.y = y
             self.z = z
+            self.parent = parent
             if x < 0 or y < 0: raise Exception(f"{x if x < 0 else y} must be non-negative")
             if not (0 <= z <= 255): raise Exception(str(z) + " must between 0 and 255 (inclusive)")
 
@@ -112,3 +117,12 @@ class ImageTraversal:
 
         def __str__(self):
             return f"({self.x} {self.y} {self.z})"
+        
+        def get_path(self):
+            path = [self.to_tuple3(self)]
+            curr = self.parent
+            while curr is not None:
+                path.append(curr.to_tuple3(curr))
+                curr = curr.parent
+            return path[::-1]
+            
