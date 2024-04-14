@@ -15,8 +15,10 @@ def test_local_beam_search():
 
 
 def test_simulated_annelling():
-    return SimulatedAnnealing(schedule=lambda t: 1 / t * t)
+    return SimulatedAnnealing(schedule)
 
+def schedule(t): 
+    return 1 / (t*t)
 
 if __name__ == "__main__":
     searcher : LocalSearchStrategy | None = None
