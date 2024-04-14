@@ -7,6 +7,7 @@ from functools import reduce
 import random
 import math
 
+
 class LocalSearchStrategy(ABC):
     @abstractmethod
     def search(self, problem: ImageTraversal) -> list[ImageTraversal.Position]: pass
@@ -68,10 +69,10 @@ class SimulatedAnnealing(LocalSearchStrategy):
                 return list(map(lambda position: ImageTraversal.Position.to_tuple3(position), path))
 
             succs = list(problem.next(cur))
-            if succs != None:
+            if succs is not None:
                 succ = random.choice(succs)
                 deltaE = int(succ.z) - int(cur.z)
-                if deltaE > 0 or SimulatedAnnealing.random(math.exp(deltaE/T)):
+                if deltaE > 0 or SimulatedAnnealing.random(math.exp(deltaE / T)):
                     path.append(succ)
 
             t = t + 1
@@ -83,12 +84,12 @@ class SimulatedAnnealing(LocalSearchStrategy):
             percent = percent * 10
             upper = upper * 10
 
-        number = random.randint(1,upper)
-        middle = upper-percent
+        number = random.randint(1, upper)
+        middle = upper - percent
         if 1 <= number <= middle:
             return False
         return True
-    
+
     @staticmethod
     def terminate(T: float) -> bool:
         if T < 0.01:
@@ -118,5 +119,5 @@ class LocalBeamSearch(LocalSearchStrategy):
 
             successsors: list[ImageTraversal.Position] = sum([list(problem.next(current)) for current in currents], [])
             successsors.sort(key=lambda p: p.z)
-            candidates:  list[ImageTraversal.Position] = successsors[-beam_width:]
+            candidates: list[ImageTraversal.Position] = successsors[-beam_width:]
             currents = candidates
