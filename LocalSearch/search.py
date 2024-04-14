@@ -104,4 +104,19 @@ class LocalBeamSearch(LocalSearchStrategy):
         return self.local_beam_search(problem, self.beam_width)
 
     @staticmethod
-    def local_beam_search(problem, schedule): pass
+    def local_beam_search(problem: ImageTraversal, beam_width: int):
+        x = random.randint(0, problem.X - 1)
+        y = random.randint(0, problem.Y - 1)
+        initial_state = ImageTraversal.Position(x, y, problem.objective_value(x, y))
+        currents = [initial_state]
+
+        while True:
+            for curr in currents:
+                best_successor = max(problem.next(curr), key=lambda position: position.z)
+                if best_successor.z <= curr.z:
+                    return curr.get_path()
+
+            successsors: list[ImageTraversal.Position] = sum([list(problem.next(current)) for current in currents], [])
+            successsors.sort(key=lambda p: p.z)
+            candidates:  list[ImageTraversal.Position] = successsors[-beam_width:]
+            currents = candidates
